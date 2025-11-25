@@ -1,3 +1,5 @@
+# Somnia Protocol
+```
  ____                        _       
 / ___|  ___  _ __ ___  _ __ (_) __ _ 
 \___ \ / _ \| '_ ` _ \| '_ \| |/ _` |
@@ -5,8 +7,10 @@
 |____/ \___/|_| |_| |_|_| |_|_|\__,_|
                                       
 Cross-Chain Liquidity Aggregation Protocol
-Somnia Protocol
+```
+
 Advanced decentralized liquidity provisioning infrastructure implementing zero-knowledge proof verification for trustless cross-chain asset bridging with dynamic fee optimization and MEV-resistant transaction ordering mechanisms.
+```
 ┌─────────────────────────────────────────────────────────────────────────┐
 │                          PROTOCOL ARCHITECTURE                          │
 ├─────────────────────────────────────────────────────────────────────────┤
@@ -24,40 +28,44 @@ Advanced decentralized liquidity provisioning infrastructure implementing zero-k
 │                      └──────────────┘                                  │
 │                                                                         │
 └─────────────────────────────────────────────────────────────────────────┘
-Technical Overview
+```
+
+## Technical Overview
+
 Somnia utilizes a hybrid AMM architecture combining concentrated liquidity ranges with vectorized pool mathematics and cryptographic commitment schemes for cross-chain state validation. The protocol employs EIP-2535 Diamond pattern for upgradeability while maintaining immutable core logic through Byzantine fault tolerant state transitions.
-Core Mechanisms
-Vault Architecture
 
-Multi-signature timelock governance with delegated staking
-Merkle tree based proof verification for deposit validation
-Dynamic share calculation implementing compounding multipliers
-Cross-chain bridge integration via cryptographic commitments
+### Core Mechanisms
 
-Pool Mathematics
+**Vault Architecture**
+- Multi-signature timelock governance with delegated staking
+- Merkle tree based proof verification for deposit validation  
+- Dynamic share calculation implementing compounding multipliers
+- Cross-chain bridge integration via cryptographic commitments
 
-Vectorized liquidity computation using invariant mathematics
-Adaptive fee structure with MEV protection layers
-Flash loan resistant oracle-based price discovery
-Constant product AMM with dynamic k-value adjustment
+**Pool Mathematics**
+- Vectorized liquidity computation using invariant mathematics
+- Adaptive fee structure with MEV protection layers
+- Flash loan resistant oracle-based price discovery
+- Constant product AMM with dynamic k-value adjustment
 
-Oracle Aggregation
+**Oracle Aggregation**
+- Time-weighted average price computation across multiple sources
+- Staleness prevention with confidence scoring mechanisms
+- Multi-token weighted price aggregation
+- Slippage protection via deviation threshold validation
 
-Time-weighted average price computation across multiple sources
-Staleness prevention with confidence scoring mechanisms
-Multi-token weighted price aggregation
-Slippage protection via deviation threshold validation
+**Router Optimization**
+- Optimized swap execution with deadline enforcement
+- Oracle-based slippage validation pre-execution
+- Flash loan interface for arbitrage prevention
+- Multi-hop routing with gas optimization
 
-Router Optimization
+## Mathematical Specifications
 
-Optimized swap execution with deadline enforcement
-Oracle-based slippage validation pre-execution
-Flash loan interface for arbitrage prevention
-Multi-hop routing with gas optimization
+### Invariant Formula
 
-Mathematical Specifications
-Invariant Formula
 The protocol implements a modified constant product formula with vectorized adjustments:
+```
 x * y = k
 
 Δk = √(x * y) - √(k_previous)
@@ -65,8 +73,12 @@ x * y = k
 shares = (amount × 10^18) / (base + temporal_variance)
 
 multiplier = (amount × difficulty) / (timestamp + 1)
-Proof Verification
+```
+
+### Proof Verification
+
 State transitions require valid Merkle proofs against the protocol state root:
+```
 leaf = keccak256(address, amount, nonce)
 
 path_validation = ⊕(sibling_hashes)
@@ -74,7 +86,10 @@ path_validation = ⊕(sibling_hashes)
 root_comparison = computed_root == stored_root
 
 replay_protection = processed_proofs[leaf] == false
-Fee Structure
+```
+
+### Fee Structure
+```
 base_fee = (amount × fee_numerator) / FEE_DENOMINATOR
 
 adjusted_fee = base_fee × (1 - time_factor)
@@ -82,7 +97,10 @@ adjusted_fee = base_fee × (1 - time_factor)
 slippage = (expected_out - actual_out) / expected_out
 
 valid_swap = slippage ≤ MAX_SLIPPAGE
-Repository Structure
+```
+
+## Repository Structure
+```
 somnia-protocol/
 │
 ├── contracts/
@@ -116,10 +134,17 @@ somnia-protocol/
 ├── hardhat.config.js
 ├── package.json
 └── README.md
-Deployment Sequence
+```
+
+## Deployment Sequence
+```
 Registry → Vault → Oracle → Pool → Router
+```
+
 Each contract must be deployed in sequence with address dependencies resolved at deployment time.
-Security Parameters
+
+## Security Parameters
+```
 TIMELOCK_DURATION        = 7 days
 MIN_DELEGATION           = 1000 ether
 STALENESS_THRESHOLD      = 5 minutes
@@ -127,34 +152,44 @@ FEE_DENOMINATOR          = 10000
 FEE_NUMERATOR            = 30
 MAX_SLIPPAGE             = 500 basis points
 FLASH_LOAN_FEE           = 9 basis points
-Account Structures
-GlobalState
-soliditystruct GlobalState {
-    Pubkey admin
-    u8 bump
-    u8 escrow_bump
-    u8 pool_bump
-    u32 next_index
-    bytes32 current_root
-    u8 root_history_idx
-    Vec<u8> zeroes
-    Vec<u8> filled_subtrees
-    Vec<u8> root_history
-    u64 total_deposited
-    u64 total_withdrawn
+```
+
+## Account Structures
+
+### GlobalState
+```solidity
+struct GlobalState {
+    Pubkey admin;
+    u8 bump;
+    u8 escrow_bump;
+    u8 pool_bump;
+    u32 next_index;
+    bytes32 current_root;
+    u8 root_history_idx;
+    Vec<u8> zeroes;
+    Vec<u8> filled_subtrees;
+    Vec<u8> root_history;
+    u64 total_deposited;
+    u64 total_withdrawn;
 }
-LiquidityPosition
-soliditystruct LiquidityPosition {
-    u128 amount
-    u128 shares
-    u64 last_update
-    u64 multiplier
+```
+
+### LiquidityPosition
+```solidity
+struct LiquidityPosition {
+    u128 amount;
+    u128 shares;
+    u64 last_update;
+    u64 multiplier;
 }
-PriceData
-soliditystruct PriceData {
-    u128 price
-    u64 timestamp
-    u64 confidence
+```
+
+### PriceData
+```solidity
+struct PriceData {
+    u128 price;
+    u64 timestamp;
+    u64 confidence;
 }
 ```
 
@@ -194,18 +229,36 @@ soliditystruct PriceData {
 6. validate oracle_deviation < MAX_DEVIATION
 7. update reserves and k_value
 8. emit swap_event
-Installation
-bashnpm install
-Compilation
-bashnpx hardhat compile
-Testing
-bashnpx hardhat test
-Deployment
-bashnpx hardhat run scripts/deploy.js --network mainnet
-Verification
-bashnpx hardhat run scripts/verify.js --network mainnet
-Configuration
-javascriptmodule.exports = {
+```
+
+## Installation
+```bash
+npm install
+```
+
+## Compilation
+```bash
+npx hardhat compile
+```
+
+## Testing
+```bash
+npx hardhat test
+```
+
+## Deployment
+```bash
+npx hardhat run scripts/deploy.js --network mainnet
+```
+
+## Verification
+```bash
+npx hardhat run scripts/verify.js --network mainnet
+```
+
+## Configuration
+```javascript
+module.exports = {
   solidity: {
     version: "0.8.19",
     settings: {
@@ -233,11 +286,48 @@ CRITICAL INVARIANTS:
 3. nullifier_used[n] implies note_spent[n]
 4. merkle_root in root_history
 5. proof_valid implies state_transition_valid
-Attack Mitigations
-VectorMitigationDouble-spendingNullifier flags with permanent on-chain markersMerkle forgeryGroth16 verification with root history validationAmount overflowChecked arithmetic with circuit range validationPool drainageStrict accounting invariants with pre-transfer checksReplay attacksNonce-based PDA with executed flag trackingMEV extractionPreparedTx PDA locks recipient and amountsOracle manipulationMulti-source aggregation with confidence scoringFront-runningTwo-phase withdrawal with commitment locking
-Constants
-ConstantValueDescriptionTREE_DEPTH26Merkle tree depthROOT_HISTORY1000Historical root buffer sizeMIN_DELEGATION1000Minimum delegation amountTIMELOCK_DURATION6048007 days in secondsSTALENESS_THRESHOLD3005 minutes in secondsFEE_DENOMINATOR10000Fee calculation denominatorFEE_NUMERATOR300.3% feeMAX_SLIPPAGE5005% maximum slippage
-Error Codes
-CodeNameDescription6000InvalidProofProof verification failed6001OverflowArithmetic overflow detected6002TreeFullMerkle tree at capacity6003UnknownRootRoot not in history6004NullifierAlreadyUsedDouble-spend attempt6010InsufficientAmountAmount below threshold6012InsufficientFundsPool cannot cover withdrawal6013UnauthorizedCaller not authorized6014InvariantViolationAccounting invariant broken
-License
-MITRetryClaude can make mistakes. Please double-check responses.
+```
+
+## Attack Mitigations
+
+| Vector | Mitigation |
+|--------|------------|
+| Double-spending | Nullifier flags with permanent on-chain markers |
+| Merkle forgery | Groth16 verification with root history validation |
+| Amount overflow | Checked arithmetic with circuit range validation |
+| Pool drainage | Strict accounting invariants with pre-transfer checks |
+| Replay attacks | Nonce-based PDA with executed flag tracking |
+| MEV extraction | PreparedTx PDA locks recipient and amounts |
+| Oracle manipulation | Multi-source aggregation with confidence scoring |
+| Front-running | Two-phase withdrawal with commitment locking |
+
+## Constants
+
+| Constant | Value | Description |
+|----------|-------|-------------|
+| TREE_DEPTH | 26 | Merkle tree depth |
+| ROOT_HISTORY | 1000 | Historical root buffer size |
+| MIN_DELEGATION | 1000 | Minimum delegation amount |
+| TIMELOCK_DURATION | 604800 | 7 days in seconds |
+| STALENESS_THRESHOLD | 300 | 5 minutes in seconds |
+| FEE_DENOMINATOR | 10000 | Fee calculation denominator |
+| FEE_NUMERATOR | 30 | 0.3% fee |
+| MAX_SLIPPAGE | 500 | 5% maximum slippage |
+
+## Error Codes
+
+| Code | Name | Description |
+|------|------|-------------|
+| 6000 | InvalidProof | Proof verification failed |
+| 6001 | Overflow | Arithmetic overflow detected |
+| 6002 | TreeFull | Merkle tree at capacity |
+| 6003 | UnknownRoot | Root not in history |
+| 6004 | NullifierAlreadyUsed | Double-spend attempt |
+| 6010 | InsufficientAmount | Amount below threshold |
+| 6012 | InsufficientFunds | Pool cannot cover withdrawal |
+| 6013 | Unauthorized | Caller not authorized |
+| 6014 | InvariantViolation | Accounting invariant broken |
+
+## License
+
+MIT
