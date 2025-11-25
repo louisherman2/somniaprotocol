@@ -328,6 +328,4 @@ CRITICAL INVARIANTS:
 | 6013 | Unauthorized | Caller not authorized |
 | 6014 | InvariantViolation | Accounting invariant broken |
 
-## License
 
-MIT
